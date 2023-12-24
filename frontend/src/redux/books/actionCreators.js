@@ -13,3 +13,12 @@ export function deleteBook(id) {
         payload: id
     }
 }
+
+export function toggleFavorite(id) {
+
+    return {
+        type: 'toggle_favorite',
+        payload: id
+    }
+}
+
