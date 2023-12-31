@@ -3,13 +3,14 @@ import './BookList.css'
 import { useSelector, useDispatch } from 'react-redux'
 import { deleteBook, toggleFavorite } from '../../redux/books/actionCreators'
 import { BsBookmarkStarFill, BsBookmarkStar } from "react-icons/bs";
-import { selectAuthor, selectTitel } from '../../redux/slices/filterSlice.js'
+import { selectAuthor, selectOnlyFavs, selectTitel } from '../../redux/slices/filterSlice.js'
 
 
 function BookList() {
     const bookList = useSelector(state => state.books)
     const title = useSelector(selectTitel)
     const author = useSelector(selectAuthor)
+    const fav_books = useSelector(selectOnlyFavs)
     const dispatch = useDispatch()
 
 
@@ -25,14 +26,33 @@ function BookList() {
     // })
 
 
-    const filteredBooks = bookList.filter(book =>
-        book.title.toLowerCase().includes(title.trim().toLowerCase()) && book.author.toLowerCase().includes(author.trim().toLowerCase()))
+    const filteredBooks = bookList.filter(book => {
+        const titleMatches = book.title.toLowerCase().includes(title.trim().toLowerCase())
+        const authorMatches = book.author.toLowerCase().includes(author.trim().toLowerCase())
+        const favBooksMatches = fav_books ? book.isFavorite : true
+        return titleMatches && authorMatches && favBooksMatches
+    })
 
-    console.log('BL', filteredBooks)
-    bookList.filter(book => book.title.includes('Sons') ? console.log(book.title) : 0)
+
+
+
+    function highlightMatch(text, filter) {
+        if (!filter) return text
+
+        const regex = new RegExp(`(${filter})`, 'gi')
+
+        return text.split(regex).map((el, i) => {
+            if (el.toLowerCase() === filter.toLowerCase()) {
+                return <span key={i} className='highlight'>{el}</span>
+            }
+            return el
+        })
+    }
+
     return (
         <div className='app-block book-list'>
             <h2>Book List</h2>
+
             {filteredBooks.length === 0 ? (
                 <p>{((title || author) && bookList.length > 0) ? 'No matching books found' : 'No books available'}</p>
             ) : (
@@ -40,7 +60,7 @@ function BookList() {
                     {filteredBooks.map((book, index) => (
                         <li key={book.id}>
                             <div className='book-info'>
-                                {index + 1}. <strong>{book.title}</strong> by <strong>{book.author}</strong>
+                                {index + 1}. <strong>{highlightMatch(book.title, title)}</strong> by <strong>{highlightMatch(book.author, author)}</strong>
                             </div>
                             {book.isFavorite ? (
                                 <BsBookmarkStarFill onClick={() => handleToggleFavorite(book.id)} className='star-icon' />
@@ -50,8 +70,7 @@ function BookList() {
                             <div className='book-actions'>
                                 <button onClick={() => dispatch(deleteBook(book.id))}>Delete</button>
                             </div>
-                        </li>
-                    ))}
+                        </li>))}
                 </ul>
             )}
         </div>

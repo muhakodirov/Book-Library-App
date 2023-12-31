@@ -1,9 +1,14 @@
+// import { useSelector, useDispatch } from 'react-redux'
 import { createSlice } from "@reduxjs/toolkit";
+
+
+
 
 
 const initialState = {
     title: '',
-    author: ''
+    author: '',
+    onlyFavs: false
 }
 
 
@@ -19,15 +24,19 @@ const filterSlice = createSlice({
             state.author = action.payload
         },
         resetFilters: (state) => {
-            // return { ...state, author: '', title: '' }
+            // return { ...state, author: '', title: '', filter: [] }
             return initialState
+        },
+        handleFavBooks: (state, action) => {
+            state.onlyFavs = action.payload
         }
     }
 })
 
 
 
-export const { setTitle, setAuthor, resetFilters } = filterSlice.actions
+export const { setTitle, setAuthor, resetFilters, handleFavBooks } = filterSlice.actions
 export const selectTitel = (state) => state.filter.title
 export const selectAuthor = (state) => state.filter.author
+export const selectOnlyFavs = (state) => state.filter.onlyFavs
 export default filterSlice.reducer
