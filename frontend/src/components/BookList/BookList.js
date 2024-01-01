@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
 import './BookList.css'
 import { useSelector, useDispatch } from 'react-redux'
-import { deleteBook, toggleFavorite } from '../../redux/books/actionCreators'
+import { toggleFavorite, deleteBook } from '../../redux/slices/bookSlice.js';
 import { BsBookmarkStarFill, BsBookmarkStar } from "react-icons/bs";
 import { selectAuthor, selectOnlyFavs, selectTitel } from '../../redux/slices/filterSlice.js'
+import { selectAllBooks } from '../../redux/slices/bookSlice.js';
 
 
 function BookList() {
-    const bookList = useSelector(state => state.books)
+    const bookList = useSelector(selectAllBooks)
+    console.log(bookList)
     const title = useSelector(selectTitel)
     const author = useSelector(selectAuthor)
     const fav_books = useSelector(selectOnlyFavs)
@@ -15,7 +17,6 @@ function BookList() {
 
 
     function handleToggleFavorite(id) {
-
         dispatch(toggleFavorite(id))
     }
 
@@ -27,8 +28,8 @@ function BookList() {
 
 
     const filteredBooks = bookList.filter(book => {
-        const titleMatches = book.title.toLowerCase().includes(title.trim().toLowerCase())
-        const authorMatches = book.author.toLowerCase().includes(author.trim().toLowerCase())
+        const titleMatches = book.title?.toLowerCase().includes(title.trim().toLowerCase())
+        const authorMatches = book.author?.toLowerCase().includes(author.trim().toLowerCase())
         const favBooksMatches = fav_books ? book.isFavorite : true
         return titleMatches && authorMatches && favBooksMatches
     })

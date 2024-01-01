@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { addBook } from '../../redux/books/actionCreators'
+import { addBook } from '../../redux/slices/bookSlice.js'
 import './BookForm.css'
 import { nanoid } from '@reduxjs/toolkit'
 import jsonData from '../../data/books.json'
 
 function BookForm() {
-    const id = nanoid()
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
     const dispatch = useDispatch()
@@ -16,7 +15,7 @@ function BookForm() {
 
         const randIndex = Math.floor(Math.random() * jsonData.length)
         const { title, author } = jsonData[randIndex]
-        dispatch(addBook({ title, author, id: nanoid(), isFavorite: false }))
+        dispatch(addBook({ title, author }))
     }
 
 
@@ -24,7 +23,7 @@ function BookForm() {
         e.preventDefault()
 
         if (title && author) {
-            dispatch(addBook({ title, author, id: nanoid(), isFavorite: false }))
+            dispatch(addBook({ title, author }))
             setTitle('')
             setAuthor('')
         }
