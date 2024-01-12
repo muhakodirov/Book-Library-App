@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { setTitle, setAuthor, selectTitel, selectAuthor, resetFilters, handleFavBooks, selectOnlyFavs } from '../../redux/slices/filterSlice.js'
 import './Filter.css'
+import { deleteAllBooks } from '../../redux/slices/bookSlice.js'
 
 function Filter() {
     const bookList = useSelector(state => state.books)
@@ -31,7 +32,9 @@ function Filter() {
                     {/* <FaStar onClick={() => dispatch(handleFavBooks(bookList))} className='fav_books' title='Favorites' /> */}
                 </div>
                 <button onClick={() => dispatch(resetFilters())}> Reset Filters</button>
-
+                <div className='book-actions'>
+                    <button onClick={() => dispatch(deleteAllBooks())}>Delete all</button>
+                </div>
             </div>
         </div>
     )

@@ -43,6 +43,15 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.error {
+  color: red;
+  font-weight: bold;
+  position: absolute;
+  padding-top: 20px;
+  top: 0;
+  right: 50px;
+}
+
 @media (max-width: 1024px) {
   .app-main {
     width: 100%;

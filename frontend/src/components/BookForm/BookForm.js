@@ -1,33 +1,44 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { ToastContainer, toast } from 'react-toastify';
 
-import { addBook } from '../../redux/slices/bookSlice.js'
+import { addBook, fetchBooks, selectStatus } from '../../redux/slices/bookSlice.js'
 import './BookForm.css'
-import { nanoid } from '@reduxjs/toolkit'
 import jsonData from '../../data/books.json'
+
+
+
+
 
 function BookForm() {
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
+    const status = useSelector(selectStatus)
     const dispatch = useDispatch()
-
     function addRandomBook() {
 
         const randIndex = Math.floor(Math.random() * jsonData.length)
         const { title, author } = jsonData[randIndex]
-        dispatch(addBook({ title, author }))
+        dispatch(addBook({ title, author, source: 'random' }))
     }
 
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        const notify = () => toast.warn("Fill the inputs, please");
 
         if (title && author) {
-            dispatch(addBook({ title, author }))
+            dispatch(addBook({ title, author, source: 'manual' }))
             setTitle('')
             setAuthor('')
+        } else {
+            notify()
         }
     }
+
+
+
+
     return (
         <>
 
@@ -42,8 +53,13 @@ function BookForm() {
                         <input type='text' id='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
                     </div>
                     <button type='submit'> Add Book </button>
-                    <button type='' onClick={addRandomBook}> Add random book </button>
                 </form>
+
+                <form>
+                    <button type='' onClick={(e) => addRandomBook(e.preventDefault())}> Add random book </button>
+                    <button disabled={status === 'Loading...'} type='' onClick={(e) => dispatch(fetchBooks(e.preventDefault()))}> Add random book via API </button>
+                </form>
+
             </div>
         </>
     )

@@ -37,6 +37,12 @@
     margin-left: 10px;
 }
 
+.book-form button:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+}
+
+
 @keyframes spinner {
     from {
         transform: rotate(0deg);
